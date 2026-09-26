@@ -44,7 +44,7 @@ Input file missing (`rehearsal-input/orders.csv` did not exist). `generate_repor
 ## Idempotent output check
 
 - **No duplicate alerts despite 3 separate failed firings**: `recovery-evidence-notify-received.log` shows exactly **one** `input_missing` delivery (13:08:12), not three, even though the underlying failure recurred at 13:08:12, 13:09:03, and 13:09:54. This is `alert_state.py`'s per-`(report_date, event_id)` dedup working as designed against a real repeated scheduled failure, not just the unit test that calls `alert.fire()` twice in-process.
-- **No duplicate alerts across 7 successful post-recovery runs, including across the restart**: `malformed_rows` and `revenue_outliers` (from the fixed-seed sample data's deliberately-planted exceptions) each appear exactly **once** in the receiver log, at 13:10:44–13:10:45, despite the report being regenerated successfully 7 more times afterward (13:10:45 through 13:15:48, spanning the 13:13:10 restart).
+- **No duplicate alerts across 7 successful post-recovery runs, including across the restart**: `malformed_rows` and `revenue_outliers` (from the fixed-seed sample data's deliberately-planted exceptions) each appear exactly **once** in the receiver log, at 13:10:44–13:10:45, despite 7 successful report runs in total (13:10:45 through 13:15:48, spanning the 13:13:10 restart).
 - **Deterministic report content**: re-ran `generate_report.py` twice in a row against the same rehearsal input/date immediately after the timed rehearsal and diffed both HTML reports with the `generated <timestamp>` line stripped — byte-identical. Confirms a rerun of the same date does not change the report's substantive content, only its generation timestamp.
 
 ## What this does and does not establish
