@@ -11,43 +11,71 @@ customers, or company data.
 A client has an order-export CSV landing daily (from a webstore, POS, or
 warehouse system). They want, every morning, without anyone touching it:
 
-- a readable daily sales report (revenue, units, top products, by region)
-- confidence that bad data (missing fields, duplicate orders, wrong-day
-  rows, malformed prices) didn't silently corrupt the numbers
-- a separate exceptions report showing exactly what was rejected and why
-- a scheduled run that survives a slow/missing input file (retry) and
-  never double-reports on a rerun (idempotent)
-- an alert if the run fails or the data looks off
+- a readable daily sales report (revenue by currency, units, top products,
+  by region)
+- confidence that bad data (missing fields, duplicate order lines,
+  wrong-day rows, malformed prices) didn't silently corrupt the numbers
+- a separate exceptions report: full raw-row detail for quarantined rows
+  (duplicates, wrong-day), category counts for malformed rows
+- a scheduled run that survives a slow/missing input file (retry), and
+  where a failed alert delivery makes the run itself fail so it gets
+  retried instead of being silently swallowed
+- an alert if the run fails, delivery fails, or the data looks off
 
 ## What it does
 
 1. **Validate** (`src/data_loader.py`): schema check (required columns),
-   type/range checks (quantity, price, status), duplicate `order_id`
-   detection, and wrong-day filtering. Malformed rows are skipped and
-   categorized; data-quality issues (duplicates, wrong day) are
-   *quarantined* — kept out of the totals but recorded, never silently
-   dropped.
+   type/range checks (quantity, price, status), and wrong-day filtering.
+   Duplicate detection is on the **line** — `(order_id, sku)` — not
+   `order_id` alone: an order legitimately has one row per distinct SKU,
+   and two lines that share only the order_id are not duplicates. Malformed
+   rows are skipped and categorized (counts only, not row identity);
+   data-quality issues (duplicate lines, wrong day) are *quarantined* —
+   kept out of the totals, and for these the full raw row is retained so
+   the exceptions report shows exactly what was excluded and why.
 2. **Flag outliers** (`src/report.py::compute_outliers`): line totals far
-   outside the day's own distribution are flagged for review — they stay
-   in the revenue totals (they may well be real), but show up as a callout.
+   outside the day's own distribution, compared only *within the same
+   currency*, are flagged for review — they stay in the revenue totals
+   (they may well be real), but show up as a callout.
 3. **Report** (`src/report.py`): renders a daily HTML report (KPIs, top
-   products, revenue by region, flags) and a CSV summary. All CSV-derived
-   text is HTML-escaped before rendering — untrusted input never becomes
-   markup.
-4. **Exceptions report**: a CSV listing every skipped/quarantined row and
-   why, for someone to audit upstream data quality.
+   products, revenue by region, flags) and a CSV summary, all grouped by
+   currency — **revenue is never summed across currencies**; there is no
+   exchange-rate conversion anywhere in this tool. A multi-currency day
+   shows one revenue figure per currency, not a blended total. All
+   CSV-derived text is HTML-escaped before rendering — untrusted input
+   never becomes markup.
+4. **Exceptions report**: a CSV with per-category counts for malformed
+   (skipped) rows, and one row per quarantined item (duplicate line,
+   wrong-day) with its full original data and the reason.
 5. **Schedule** (`deploy/`): a cron example and a systemd service+timer
    pair, both driving `src/run_daily.sh`.
-6. **Retry + idempotency** (`src/run_daily.sh`, `src/alert_state.py`): the
-   wrapper retries a transient failure (input not mounted yet) with
-   backoff, takes an exclusive `flock` so an overlapping run skips instead
-   of racing, and alert delivery is deduplicated per `(report_date,
-   event_id)` so a rerun of the same day never re-fires a notification
-   that already went out.
+6. **Retry, locking, and delivery-failure propagation**
+   (`src/run_daily.sh`, `src/alert_state.py`): the wrapper retries a
+   transient failure (input not mounted yet, or a failed alert delivery)
+   with backoff, and takes an exclusive `flock` so an overlapping
+   *scheduled* run skips instead of racing — the lock only protects runs
+   that go through `run_daily.sh`; invoking `generate_report.py` directly
+   bypasses it. Alert delivery is deduplicated per `(report_date,
+   event_id)` **after a successful send only**, so a rerun of the same day
+   does not re-notify on a condition that was already delivered, and a
+   failed delivery is retried on the next run. This is **at-least-once**
+   delivery, not exactly-once: a crash in the brief window between sending
+   and recording that state (or a corrupted state file, which is treated
+   as empty rather than blocking the run) can cause a duplicate
+   notification. The dedup state does not distinguish the console stub
+   from a real `NOTIFY_CMD` channel, so switching from the stub to a real
+   channel with old state present can suppress that day's real alert until
+   the state file is cleared.
 7. **Failure alerts** (`src/alert.py`): a stub that prints the exact
-   payload it would send. Point `NOTIFY_CMD` at any executable that reads
+   payload it would send; set `NOTIFY_CMD` to any executable that reads
    JSON on stdin (email, Slack webhook, PagerDuty, etc.) to wire a real
-   channel — no code change needed.
+   channel — no code change needed. The CLI tracks every alert's delivery
+   result: if any alert fails to send, `generate_report.py` prints
+   `PARTIAL` (not `OK`) and exits non-zero, so `run_daily.sh`'s retry loop
+   retries the whole run rather than treating a swallowed notification
+   failure as success. There is no separate outbox/queue — a "retry" here
+   means rerunning the report generator, which is safe because delivery
+   state is only marked on success.
 
 ## Sample output
 
@@ -78,12 +106,16 @@ Run the tests:
 .venv/bin/python -m pytest tests -v
 ```
 
-19 tests: schema/type validation per field, duplicate and wrong-day
-quarantine, outlier detection, revenue summarization, HTML-escaping of
-untrusted CSV content, CSV summary/exceptions writing, alert firing and
-idempotency (including a simulated delivery failure), an end-to-end CLI
-run, and two subprocess tests of `run_daily.sh` itself (lock contention,
-retry-then-escalate).
+24 tests: schema/type validation per field, duplicate-line (not
+duplicate-order-id) quarantine, a regression proving a multi-SKU order
+keeps every line, per-currency revenue summarization (including a
+two-currency fixture proving totals are never summed together),
+per-currency outlier detection, HTML-escaping of untrusted CSV content,
+CSV summary/exceptions writing, alert firing and idempotency (including a
+simulated delivery failure), an end-to-end CLI run, and four subprocess
+tests of the real CLI/`run_daily.sh` (lock contention, retry-then-escalate,
+notifier-failure exit code, and the wrapper retrying after a notifier
+failure).
 
 ## What a client gets
 
@@ -109,9 +141,11 @@ It writes `output/daily-sales-report-<date>.html`,
 | No new files in `output/` after the scheduled time | Input CSV not present yet, or timer/cron not firing | Check `src/alerts.log` for a `CRITICAL`/`WARNING` line; check `systemctl list-timers` or `crontab -l` |
 | `alerts.log` has `input_missing` | Upstream export job didn't land the file | Confirm the export job on the source system; rerun `run_daily.sh` once the file exists |
 | `alerts.log` has `no_orders` | File exists but has zero usable rows for the date | Check the file wasn't truncated/empty upstream |
-| `alerts.log` has `malformed_rows` | Some rows failed validation | Open `exceptions-<date>.csv`, look at the `category` column, fix upstream data entry |
-| Report looks right but a rerun didn't re-alert | By design — alert delivery is deduplicated per `(date, event_id)` in `state/alerts-<date>.json`. Delete that file to force re-delivery for testing. |
-| Two scheduled runs overlapped | `run_daily.sh` took the `flock`; the second one logs a `WARNING` and exits 0 without touching `output/`. This is expected, not a bug. |
+| `alerts.log` has `malformed_rows` | Some rows failed validation | Open `exceptions-<date>.csv`; malformed rows show as per-category counts, quarantined rows (duplicates/wrong-day) show the full original row |
+| CLI printed `PARTIAL` and exited non-zero | Report was generated, but one or more alerts failed to deliver (`NOTIFY_CMD` failed) | Check `src/alerts.log`/stderr for which event id(s) failed; `run_daily.sh` will retry it |
+| Report looks right but a rerun didn't re-alert | By design, for conditions that were already **successfully delivered** — dedup is per `(date, event_id)` in `state/alerts-<date>.json`, marked only on send success. A failed delivery is *not* marked and will be retried. Delete the state file to force re-delivery for testing. |
+| Switched from the console stub to a real `NOTIFY_CMD` and a known alert didn't arrive | Old dedup state from the stub run can still be present and will suppress the real send | Clear `state/alerts-<date>.json` for that date before relying on the real channel |
+| Two scheduled runs overlapped | `run_daily.sh` took the `flock`; the second one logs a `WARNING` and exits 0 without touching `output/`. This only protects runs made *through* `run_daily.sh` — a manual direct `generate_report.py` invocation is not locked. |
 | `run_daily.sh` retried and still failed | Check `alerts.log` for the `CRITICAL` line with the final exit code; the underlying `generate_report.py` stderr is not captured by the wrapper — rerun it directly to see the traceback |
 
 **Support boundary.** This repo is a bounded, reviewed automation: input

@@ -5,10 +5,15 @@ report (CSV) from a validated LoadResult.
 All CSV-derived text is HTML-escaped before it reaches the HTML template --
 untrusted input becoming markup is a real defect class in CSV-to-report
 tools, not a hypothetical one; treat every field as hostile.
+
+Money is never summed across currencies. Every revenue figure in this
+module is grouped by currency first; there is no implicit FX conversion
+anywhere in this file. If a client needs a single blended total, that
+requires an explicit, dated exchange-rate source, which this demo does not
+have and will not fake.
 """
 import csv
 import html
-import math
 import statistics
 from collections import defaultdict
 from datetime import datetime, timezone
@@ -22,22 +27,28 @@ from config import (
 
 def compute_outliers(rows):
     """Flag completed-order line totals that are unusually large relative
-    to the day's own distribution. Informational only -- outliers stay in
-    the revenue totals, they're just called out for a human to glance at."""
-    totals = [r.line_total for r in rows if r.status == "completed"]
-    if len(totals) < 2:
-        return set()
-    mean = statistics.mean(totals)
-    stdev = statistics.pstdev(totals)
-    if stdev == 0:
-        return set()
-    threshold = mean + OUTLIER_LINE_TOTAL_STDEV * stdev
-    flagged = set()
+    to the day's own distribution, *within the same currency* -- a $500
+    line and a EUR500 line are not on the same scale and must not be
+    compared directly. Informational only -- outliers stay in the revenue
+    totals, they're just called out for a human to glance at."""
+    by_currency = defaultdict(list)
     for r in rows:
-        if r.status != "completed":
+        if r.status == "completed":
+            by_currency[r.currency].append(r)
+
+    flagged = set()
+    for currency, group in by_currency.items():
+        totals = [r.line_total for r in group]
+        if len(totals) < 2:
             continue
-        if r.line_total >= max(threshold, OUTLIER_MIN_LINE_TOTAL):
-            flagged.add(r.order_id)
+        mean = statistics.mean(totals)
+        stdev = statistics.pstdev(totals)
+        if stdev == 0:
+            continue
+        threshold = mean + OUTLIER_LINE_TOTAL_STDEV * stdev
+        for r in group:
+            if r.line_total >= max(threshold, OUTLIER_MIN_LINE_TOTAL):
+                flagged.add(r.order_id)
     return flagged
 
 
@@ -46,46 +57,71 @@ def summarize(rows, outlier_ids):
     refunded = [r for r in rows if r.status == "refunded"]
     cancelled = [r for r in rows if r.status == "cancelled"]
 
-    gross_revenue = round(sum(r.line_total for r in completed), 2)
-    refund_amount = round(sum(r.line_total for r in refunded), 2)
-    net_revenue = round(gross_revenue - refund_amount, 2)
-    units_sold = sum(r.quantity for r in completed)
+    currencies = sorted({r.currency for r in rows})
 
+    by_currency = defaultdict(lambda: {"gross_revenue": 0.0, "refund_amount": 0.0, "net_revenue": 0.0})
+    for r in completed:
+        by_currency[r.currency]["gross_revenue"] = round(
+            by_currency[r.currency]["gross_revenue"] + r.line_total, 2
+        )
+    for r in refunded:
+        by_currency[r.currency]["refund_amount"] = round(
+            by_currency[r.currency]["refund_amount"] + r.line_total, 2
+        )
+    for currency, e in by_currency.items():
+        e["net_revenue"] = round(e["gross_revenue"] - e["refund_amount"], 2)
+
+    units_sold = sum(r.quantity for r in completed)  # a unit count, not money -- safe to sum across currencies
+
+    # by_sku / by_region are keyed by (key, currency) -- never merged across
+    # currency, so a revenue figure is always single-currency.
     by_sku = defaultdict(lambda: {"units": 0, "revenue": 0.0, "name": ""})
     by_region = defaultdict(lambda: {"units": 0, "revenue": 0.0})
     for r in completed:
-        e = by_sku[r.sku]
+        sku_key = (r.sku, r.currency)
+        e = by_sku[sku_key]
         e["units"] += r.quantity
         e["revenue"] = round(e["revenue"] + r.line_total, 2)
         e["name"] = r.product_name or e["name"]
+
         reg = r.region or "unspecified"
-        e2 = by_region[reg]
+        region_key = (reg, r.currency)
+        e2 = by_region[region_key]
         e2["units"] += r.quantity
         e2["revenue"] = round(e2["revenue"] + r.line_total, 2)
 
-    top_skus = sorted(by_sku.items(), key=lambda kv: kv[1]["revenue"], reverse=True)[:10]
+    top_skus_by_currency = {}
+    concentration_flags_by_currency = {}
+    for currency in currencies:
+        entries = [(sku, e) for (sku, cur), e in by_sku.items() if cur == currency]
+        entries.sort(key=lambda kv: kv[1]["revenue"], reverse=True)
+        top_skus_by_currency[currency] = entries[:10]
 
-    concentration_flags = []
-    if gross_revenue > 0:
-        for sku, e in top_skus:
-            share = e["revenue"] / gross_revenue
-            if share >= TOP_SKU_CONCENTRATION_ALERT:
-                concentration_flags.append((sku, share))
+        gross = by_currency.get(currency, {}).get("gross_revenue", 0.0)
+        flags = []
+        if gross > 0:
+            for sku, e in entries[:10]:
+                share = e["revenue"] / gross
+                if share >= TOP_SKU_CONCENTRATION_ALERT:
+                    flags.append((sku, share))
+        concentration_flags_by_currency[currency] = flags
+
+    by_region_by_currency = defaultdict(dict)
+    for (region, currency), e in by_region.items():
+        by_region_by_currency[currency][region] = e
 
     return {
         "orders_total": len(rows),
         "orders_completed": len(completed),
         "orders_refunded": len(refunded),
         "orders_cancelled": len(cancelled),
-        "gross_revenue": gross_revenue,
-        "refund_amount": refund_amount,
-        "net_revenue": net_revenue,
         "units_sold": units_sold,
-        "by_sku": by_sku,
-        "by_region": dict(by_region),
-        "top_skus": top_skus,
+        "currencies": currencies,
+        "by_currency": dict(by_currency),
+        "top_skus_by_currency": top_skus_by_currency,
+        "by_region_by_currency": dict(by_region_by_currency),
         "outlier_ids": outlier_ids,
-        "concentration_flags": concentration_flags,
+        "concentration_flags_by_currency": concentration_flags_by_currency,
     }
 
 
@@ -97,14 +133,17 @@ def write_csv_summary(path, report_date, summary):
         w.writerow(["orders_completed", summary["orders_completed"]])
         w.writerow(["orders_refunded", summary["orders_refunded"]])
         w.writerow(["orders_cancelled", summary["orders_cancelled"]])
-        w.writerow(["gross_revenue", summary["gross_revenue"]])
-        w.writerow(["refund_amount", summary["refund_amount"]])
-        w.writerow(["net_revenue", summary["net_revenue"]])
         w.writerow(["units_sold", summary["units_sold"]])
         w.writerow([])
-        w.writerow(["sku", "product_name", "units", "revenue"])
-        for sku, e in summary["top_skus"]:
-            w.writerow([sku, e["name"], e["units"], e["revenue"]])
+        w.writerow(["currency", "gross_revenue", "refund_amount", "net_revenue"])
+        for currency in summary["currencies"]:
+            e = summary["by_currency"].get(currency, {"gross_revenue": 0, "refund_amount": 0, "net_revenue": 0})
+            w.writerow([currency, e["gross_revenue"], e["refund_amount"], e["net_revenue"]])
+        w.writerow([])
+        w.writerow(["currency", "sku", "product_name", "units", "revenue"])
+        for currency in summary["currencies"]:
+            for sku, e in summary["top_skus_by_currency"].get(currency, []):
+                w.writerow([currency, sku, e["name"], e["units"], e["revenue"]])
 
 
 def write_exceptions_csv(path, load_result):
@@ -124,31 +163,73 @@ def _esc(v) -> str:
     return html.escape(str(v), quote=True)
 
 
+def _fmt_money(currency, amount) -> str:
+    return f"{_esc(currency)} {amount:.2f}"
+
+
 def render_html(report_date, summary, load_result, generated_at=None):
     generated_at = generated_at or datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
 
-    sku_rows = "\n".join(
-        f"<tr><td>{_esc(sku)}</td><td>{_esc(e['name'] or '—')}</td>"
-        f"<td>{_esc(e['units'])}</td><td>${_esc(f'{e['revenue']:.2f}')}</td></tr>"
-        for sku, e in summary["top_skus"]
+    currencies = summary["currencies"]
+
+    kpi_currency_rows = "".join(
+        f"<div class='kpi'><div class='label'>Gross ({_esc(cur)})</div>"
+        f"<div class='value'>{_fmt_money(cur, summary['by_currency'].get(cur, {}).get('gross_revenue', 0.0))}</div></div>"
+        for cur in currencies
+    ) or "<div class='kpi'><div class='label'>Gross revenue</div><div class='value'>—</div></div>"
+
+    currency_table_rows = "\n".join(
+        f"<tr><td>{_esc(cur)}</td>"
+        f"<td>{summary['by_currency'].get(cur, {}).get('gross_revenue', 0.0):.2f}</td>"
+        f"<td>{summary['by_currency'].get(cur, {}).get('refund_amount', 0.0):.2f}</td>"
+        f"<td>{summary['by_currency'].get(cur, {}).get('net_revenue', 0.0):.2f}</td></tr>"
+        for cur in currencies
     ) or "<tr><td colspan=4>No completed orders</td></tr>"
 
-    region_rows = "\n".join(
-        f"<tr><td>{_esc(region)}</td><td>{_esc(e['units'])}</td>"
-        f"<td>${_esc(f'{e['revenue']:.2f}')}</td></tr>"
-        for region, e in sorted(summary["by_region"].items(), key=lambda kv: -kv[1]["revenue"])
-    ) or "<tr><td colspan=3>No completed orders</td></tr>"
+    sku_sections = ""
+    for cur in currencies:
+        entries = summary["top_skus_by_currency"].get(cur, [])
+        rows_html = "\n".join(
+            f"<tr><td>{_esc(sku)}</td><td>{_esc(e['name'] or '—')}</td>"
+            f"<td>{_esc(e['units'])}</td><td>{e['revenue']:.2f}</td></tr>"
+            for sku, e in entries
+        ) or "<tr><td colspan=4>No completed orders</td></tr>"
+        sku_sections += (
+            f"<h3>Currency: {_esc(cur)}</h3>"
+            f"<table><tr><th>SKU</th><th>Product</th><th>Units</th><th>Revenue ({_esc(cur)})</th></tr>{rows_html}</table>"
+        )
+    if not currencies:
+        sku_sections = "<p>No completed orders.</p>"
+
+    region_sections = ""
+    for cur in currencies:
+        by_region = summary["by_region_by_currency"].get(cur, {})
+        rows_html = "\n".join(
+            f"<tr><td>{_esc(region)}</td><td>{_esc(e['units'])}</td><td>{e['revenue']:.2f}</td></tr>"
+            for region, e in sorted(by_region.items(), key=lambda kv: -kv[1]["revenue"])
+        ) or "<tr><td colspan=3>No completed orders</td></tr>"
+        region_sections += (
+            f"<h3>Currency: {_esc(cur)}</h3>"
+            f"<table><tr><th>Region</th><th>Units</th><th>Revenue ({_esc(cur)})</th></tr>{rows_html}</table>"
+        )
+    if not currencies:
+        region_sections = "<p>No completed orders.</p>"
 
     outlier_html = ""
     if summary["outlier_ids"]:
         items = "".join(f"<li>order {_esc(oid)}</li>" for oid in sorted(summary["outlier_ids"]))
-        outlier_html = f"<div class='flag'><strong>Outlier line totals flagged for review:</strong><ul>{items}</ul></div>"
+        outlier_html = f"<div class='flag'><strong>Outlier line totals flagged for review (within their own currency):</strong><ul>{items}</ul></div>"
 
     concentration_html = ""
-    if summary["concentration_flags"]:
+    all_flags = [
+        (cur, sku, share)
+        for cur, flags in summary["concentration_flags_by_currency"].items()
+        for sku, share in flags
+    ]
+    if all_flags:
         items = "".join(
-            f"<li>{_esc(sku)}: {share*100:.0f}% of gross revenue</li>"
-            for sku, share in summary["concentration_flags"]
+            f"<li>{_esc(sku)} ({_esc(cur)}): {share*100:.0f}% of that currency's gross revenue</li>"
+            for cur, sku, share in all_flags
         )
         concentration_html = f"<div class='flag'><strong>Revenue concentration flags:</strong><ul>{items}</ul></div>"
 
@@ -194,6 +275,8 @@ def render_html(report_date, summary, load_result, generated_at=None):
   .flag.warn {{ background: #fff3e0; border-color: #f0b878; }}
   .flag.error {{ background: #fdecea; border-color: #e57373; }}
   h2 {{ margin-top: 2rem; }}
+  h3 {{ margin-top: 1.2rem; color: #444; }}
+  .note {{ color: #666; font-size: 0.85rem; }}
 </style>
 </head>
 <body>
@@ -204,28 +287,27 @@ def render_html(report_date, summary, load_result, generated_at=None):
 
 <div class="kpis">
   <div class="kpi"><div class="label">Orders</div><div class="value">{summary['orders_total']}</div></div>
-  <div class="kpi"><div class="label">Gross revenue</div><div class="value">${summary['gross_revenue']:.2f}</div></div>
-  <div class="kpi"><div class="label">Refunds</div><div class="value">${summary['refund_amount']:.2f}</div></div>
-  <div class="kpi"><div class="label">Net revenue</div><div class="value">${summary['net_revenue']:.2f}</div></div>
   <div class="kpi"><div class="label">Units sold</div><div class="value">{summary['units_sold']}</div></div>
+  {kpi_currency_rows}
 </div>
+<p class="note">Revenue is reported per currency and never summed across currencies -- no exchange rate is assumed.</p>
 
 {outlier_html}
 {concentration_html}
 {bad_rows_html}
 {quarantine_html}
 
-<h2>Top products by revenue</h2>
+<h2>Revenue by currency</h2>
 <table>
-<tr><th>SKU</th><th>Product</th><th>Units</th><th>Revenue</th></tr>
-{sku_rows}
+<tr><th>Currency</th><th>Gross revenue</th><th>Refunds</th><th>Net revenue</th></tr>
+{currency_table_rows}
 </table>
 
+<h2>Top products by revenue</h2>
+{sku_sections}
+
 <h2>Revenue by region</h2>
-<table>
-<tr><th>Region</th><th>Units</th><th>Revenue</th></tr>
-{region_rows}
-</table>
+{region_sections}
 
 </body>
 </html>

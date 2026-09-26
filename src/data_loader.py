@@ -156,6 +156,7 @@ def load_orders(csv_path: str, report_date: str) -> LoadResult:
                 continue
 
             order_id = raw["order_id"].strip()
+            sku = raw["sku"].strip()
 
             if parsed_date != report_date:
                 result.quarantined.append(QuarantinedRow(
@@ -164,13 +165,20 @@ def load_orders(csv_path: str, report_date: str) -> LoadResult:
                 ))
                 continue
 
-            if order_id in seen_order_ids:
+            # Dedup key is the *line* (order_id + sku), not the order_id
+            # alone: an order legitimately has one row per distinct SKU
+            # line item, and order_id-only dedup was silently dropping
+            # every SKU after the first on a multi-line order. Two rows
+            # that share both order_id and sku are the real duplicate
+            # case (e.g. an upstream export retry).
+            line_key = (order_id, sku)
+            if line_key in seen_order_ids:
                 result.quarantined.append(QuarantinedRow(
                     category=CAT_DUPLICATE, raw=dict(raw),
-                    detail=f"duplicate order_id {order_id!r} (kept first occurrence)",
+                    detail=f"duplicate order line (order_id={order_id!r}, sku={sku!r}) (kept first occurrence)",
                 ))
                 continue
-            seen_order_ids.add(order_id)
+            seen_order_ids.add(line_key)
 
             result.rows.append(OrderRow(
                 order_id=order_id,

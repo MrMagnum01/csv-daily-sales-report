@@ -101,17 +101,33 @@ def test_wrong_day_row_is_quarantined_not_dropped_silently(tmp_path):
     assert result.quarantined[0].category == CAT_WRONG_DAY
 
 
-def test_duplicate_order_id_is_quarantined_keeps_first(tmp_path):
+def test_duplicate_order_line_is_quarantined_keeps_first(tmp_path):
+    # Same order_id AND same sku twice -- this is the real duplicate case
+    # (e.g. an upstream export retry re-sending the identical line).
     rows = (
         "ORD-1,2026-01-15,CUST-1,SKU-1001,Lamp,Home,1,10.00,completed,europe,USD\n"
-        "ORD-1,2026-01-15,CUST-2,SKU-1002,Bag,Bags,1,20.00,completed,europe,USD\n"
+        "ORD-1,2026-01-15,CUST-1,SKU-1001,Lamp,Home,1,10.00,completed,europe,USD\n"
     )
     path = _write_csv(tmp_path, rows)
     result = load_orders(path, REPORT_DATE)
     assert len(result.rows) == 1
-    assert result.rows[0].customer_id == "CUST-1"
     assert len(result.quarantined) == 1
     assert result.quarantined[0].category == CAT_DUPLICATE
+
+
+def test_multi_sku_order_is_not_dropped_as_duplicate(tmp_path):
+    # Regression for Astra finding 2: an order with two DISTINCT SKU line
+    # items sharing the same order_id must keep both lines -- dedup is on
+    # the full (order_id, sku) line key, not order_id alone.
+    rows = (
+        "ORD-1,2026-01-15,CUST-1,SKU-1001,Lamp,Home,1,10.00,completed,europe,USD\n"
+        "ORD-1,2026-01-15,CUST-1,SKU-1002,Bag,Bags,1,20.00,completed,europe,USD\n"
+    )
+    path = _write_csv(tmp_path, rows)
+    result = load_orders(path, REPORT_DATE)
+    assert len(result.rows) == 2
+    assert {r.sku for r in result.rows} == {"SKU-1001", "SKU-1002"}
+    assert result.quarantined == []
 
 
 def test_outlier_detection_flags_large_line_total(tmp_path):
@@ -127,7 +143,7 @@ def test_outlier_detection_flags_large_line_total(tmp_path):
     assert "ORD-0" not in outliers
 
 
-def test_summarize_computes_net_revenue_and_top_skus(tmp_path):
+def test_summarize_computes_net_revenue_and_top_skus_per_currency(tmp_path):
     rows = (
         "ORD-1,2026-01-15,CUST-1,SKU-1001,Lamp,Home,2,10.00,completed,europe,USD\n"
         "ORD-2,2026-01-15,CUST-2,SKU-1001,Lamp,Home,1,10.00,refunded,europe,USD\n"
@@ -136,10 +152,52 @@ def test_summarize_computes_net_revenue_and_top_skus(tmp_path):
     path = _write_csv(tmp_path, rows)
     result = load_orders(path, REPORT_DATE)
     summary = summarize(result.rows, set())
-    assert summary["gross_revenue"] == 70.00
-    assert summary["refund_amount"] == 10.00
-    assert summary["net_revenue"] == 60.00
-    assert summary["top_skus"][0][0] == "SKU-1002"
+    assert summary["currencies"] == ["USD"]
+    assert summary["by_currency"]["USD"]["gross_revenue"] == 70.00
+    assert summary["by_currency"]["USD"]["refund_amount"] == 10.00
+    assert summary["by_currency"]["USD"]["net_revenue"] == 60.00
+    assert summary["top_skus_by_currency"]["USD"][0][0] == "SKU-1002"
+
+
+def test_currencies_are_never_summed_together(tmp_path):
+    # Astra finding 2 regression: a USD order and a EUR order must each
+    # keep their own currency's totals -- never a blended/dollar-labelled
+    # sum across currencies.
+    rows = (
+        "ORD-1,2026-01-15,CUST-1,SKU-1001,Lamp,Home,1,100.00,completed,europe,USD\n"
+        "ORD-2,2026-01-15,CUST-2,SKU-1002,Bag,Bags,1,50.00,completed,europe,EUR\n"
+    )
+    path = _write_csv(tmp_path, rows)
+    result = load_orders(path, REPORT_DATE)
+    summary = summarize(result.rows, set())
+    assert summary["currencies"] == ["EUR", "USD"]
+    assert summary["by_currency"]["USD"]["gross_revenue"] == 100.00
+    assert summary["by_currency"]["EUR"]["gross_revenue"] == 50.00
+    # Neither total is 150 -- no currency was summed into the other.
+    assert summary["by_currency"]["USD"]["gross_revenue"] != 150.00
+    assert summary["by_currency"]["EUR"]["gross_revenue"] != 150.00
+
+    html_out = render_html(REPORT_DATE, summary, result)
+    assert "USD 100.00" in html_out
+    assert "EUR 50.00" in html_out
+
+
+def test_two_skus_one_order_two_currencies_regression(tmp_path):
+    # Exact Astra probe fixture: two distinct SKUs on one USD order, plus
+    # one EUR order. Neither SKU line may be dropped, and currencies must
+    # stay separate.
+    rows = (
+        "ORD-1,2026-01-15,CUST-1,SKU-1001,Lamp,Home,1,10.00,completed,europe,USD\n"
+        "ORD-1,2026-01-15,CUST-1,SKU-1002,Bag,Bags,1,20.00,completed,europe,USD\n"
+        "ORD-2,2026-01-15,CUST-2,SKU-1003,Bottle,Outdoor,1,15.00,completed,europe,EUR\n"
+    )
+    path = _write_csv(tmp_path, rows)
+    result = load_orders(path, REPORT_DATE)
+    assert len(result.rows) == 3
+    assert result.quarantined == []
+    summary = summarize(result.rows, set())
+    assert summary["by_currency"]["USD"]["gross_revenue"] == 30.00
+    assert summary["by_currency"]["EUR"]["gross_revenue"] == 15.00
 
 
 def test_html_escaping_of_untrusted_csv_values(tmp_path):
@@ -256,6 +314,65 @@ def test_run_daily_skips_when_lock_held(tmp_path):
     finally:
         holder.kill()
         holder.wait()
+
+
+def test_cli_exits_nonzero_and_no_ok_when_notifier_fails(tmp_path):
+    # Astra finding 1 regression, via the real CLI subprocess (not just
+    # alert.fire in-process) -- a failing NOTIFY_CMD must make the whole
+    # process exit non-zero and must NOT print "OK: report", so
+    # run_daily.sh's retry loop actually retries delivery instead of
+    # treating a swallowed notifier failure as success.
+    src_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src")
+    # A malformed row guarantees at least one fire() call happens.
+    orders_csv = tmp_path / "orders.csv"
+    orders_csv.write_text(
+        "order_id,order_date,customer_id,sku,quantity,unit_price,status,region,currency\n"
+        "ORD-1,bad-date,CUST-1,SKU-1,1,10.00,completed,europe,USD\n"
+    )
+    env = dict(
+        os.environ,
+        NOTIFY_CMD="false",  # /usr/bin/false-equivalent: always exits 1
+        SALES_STATE_DIR=str(tmp_path / "state"),
+    )
+    proc = subprocess.run(
+        [sys.executable, os.path.join(src_dir, "generate_report.py"),
+         "--input", str(orders_csv), "--output-dir", str(tmp_path / "output"), "--date", REPORT_DATE],
+        cwd=src_dir, env=env, capture_output=True, text=True,
+    )
+    assert proc.returncode != 0
+    assert "OK: report" not in proc.stdout
+    assert "PARTIAL" in proc.stdout or "PARTIAL" in proc.stderr
+
+
+def test_run_daily_retries_delivery_after_notifier_failure(tmp_path):
+    # End-to-end wrapper regression: run_daily.sh must retry (not just
+    # generate_report.py directly) when the notifier fails.
+    src_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src")
+    orders_csv = tmp_path / "orders.csv"
+    orders_csv.write_text(
+        "order_id,order_date,customer_id,sku,quantity,unit_price,status,region,currency\n"
+        "ORD-1,bad-date,CUST-1,SKU-1,1,10.00,completed,europe,USD\n"
+    )
+    env = dict(
+        os.environ,
+        NOTIFY_CMD="false",
+        SALES_INPUT=str(orders_csv),
+        SALES_DATE=REPORT_DATE,
+        SALES_OUTPUT_DIR=str(tmp_path / "output"),
+        SALES_ALERTS_LOG=str(tmp_path / "alerts.log"),
+        SALES_LOCK_FILE=str(tmp_path / "run.lock"),
+        SALES_RETRY_ATTEMPTS="2",
+        SALES_RETRY_BACKOFF_SECONDS="0",
+        SALES_STATE_DIR=str(tmp_path / "state"),
+    )
+    proc = subprocess.run(
+        ["bash", os.path.join(src_dir, "run_daily.sh")],
+        env=env, capture_output=True, text=True, timeout=30,
+    )
+    assert proc.returncode != 0
+    log = (tmp_path / "alerts.log").read_text()
+    assert "attempt 1/2 failed" in log
+    assert "CRITICAL" in log
 
 
 def test_run_daily_retries_then_succeeds(tmp_path, monkeypatch):

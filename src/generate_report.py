@@ -3,10 +3,14 @@
 CLI entry point: load one day of orders, validate, render the HTML report +
 CSV summary + exceptions CSV, and fire failure alerts.
 
-Exit codes: 0 = report generated (even if there were exceptions -- the
-report itself documents those). Non-zero = the run itself failed (no input
-file found at all, or an unhandled error) -- this is what run_daily.sh's
-retry loop watches for.
+Exit codes: 0 = report generated AND every alert that fired was
+successfully delivered (even if there were data exceptions -- the report
+itself documents those, that's not a delivery failure). Non-zero = either
+the run itself failed (no input file found at all, or an unhandled error),
+or the report was generated but one or more alerts failed to deliver --
+in both cases this is what run_daily.sh's retry loop watches for, so a
+failed notification gets retried rather than silently swallowed. A failed
+delivery is never reported as "OK".
 """
 import argparse
 import os
@@ -54,19 +58,35 @@ def main(argv=None) -> int:
 
     # Alerting -- each condition is its own event id, deduplicated per day
     # so a retry/rerun of the same date doesn't re-notify on conditions
-    # that were already reported.
+    # that were already reported. Every fire() call's Boolean result is
+    # tracked: a failed delivery must make the whole run non-zero so
+    # run_daily.sh's retry loop actually retries it, instead of the CLI
+    # printing OK while a real alert silently never went out.
+    delivery_failures = []
+
     if result.file_empty:
-        fire(report_date, "no_orders", "warning",
-             f"No usable orders found for {report_date} -- check the export job.")
+        if not fire(report_date, "no_orders", "warning",
+                     f"No usable orders found for {report_date} -- check the export job."):
+            delivery_failures.append("no_orders")
 
     if result.total_bad_rows() > 0:
-        fire(report_date, "malformed_rows", "warning",
-             f"{result.total_bad_rows()} malformed row(s) skipped on {report_date}: "
-             f"{dict(result.bad_row_categories)}")
+        if not fire(report_date, "malformed_rows", "warning",
+                     f"{result.total_bad_rows()} malformed row(s) skipped on {report_date}: "
+                     f"{dict(result.bad_row_categories)}"):
+            delivery_failures.append("malformed_rows")
 
     if outlier_ids:
-        fire(report_date, "revenue_outliers", "info",
-             f"{len(outlier_ids)} order(s) flagged as revenue outliers on {report_date}.")
+        if not fire(report_date, "revenue_outliers", "info",
+                     f"{len(outlier_ids)} order(s) flagged as revenue outliers on {report_date}."):
+            delivery_failures.append("revenue_outliers")
+
+    if delivery_failures:
+        print(
+            f"PARTIAL: report generated for {report_date} -> {html_path}, "
+            f"but alert delivery FAILED for: {', '.join(delivery_failures)}",
+            file=sys.stderr,
+        )
+        return 3
 
     print(f"OK: report for {report_date} -> {html_path}")
     return 0
