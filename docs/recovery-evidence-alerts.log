@@ -1,0 +1,6 @@
+2026-09-26T13:08:12Z [INFO] run_daily.sh: attempt 1/2 failed (exit 2) -- retrying in 3s
+2026-09-26T13:08:15Z [CRITICAL] run_daily.sh: generate_report.py failed after 2 attempt(s), exit 2
+2026-09-26T13:09:03Z [INFO] run_daily.sh: attempt 1/2 failed (exit 2) -- retrying in 3s
+2026-09-26T13:09:06Z [CRITICAL] run_daily.sh: generate_report.py failed after 2 attempt(s), exit 2
+2026-09-26T13:09:54Z [INFO] run_daily.sh: attempt 1/2 failed (exit 2) -- retrying in 3s
+2026-09-26T13:09:57Z [CRITICAL] run_daily.sh: generate_report.py failed after 2 attempt(s), exit 2

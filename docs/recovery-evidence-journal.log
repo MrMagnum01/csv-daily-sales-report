@@ -1,0 +1,20 @@
+2026-09-26T13:08:12+00:00 rehearsal-host run_daily.sh[1289354]: ERROR: input file not found: /opt/csv-daily-sales-report/rehearsal-input/orders.csv
+2026-09-26T13:08:15+00:00 rehearsal-host run_daily.sh[1289569]: ERROR: input file not found: /opt/csv-daily-sales-report/rehearsal-input/orders.csv
+2026-09-26T13:09:03+00:00 rehearsal-host run_daily.sh[1291126]: ERROR: input file not found: /opt/csv-daily-sales-report/rehearsal-input/orders.csv
+2026-09-26T13:09:06+00:00 rehearsal-host run_daily.sh[1291155]: ERROR: input file not found: /opt/csv-daily-sales-report/rehearsal-input/orders.csv
+2026-09-26T13:09:54+00:00 rehearsal-host run_daily.sh[1293979]: ERROR: input file not found: /opt/csv-daily-sales-report/rehearsal-input/orders.csv
+2026-09-26T13:09:57+00:00 rehearsal-host run_daily.sh[1294009]: ERROR: input file not found: /opt/csv-daily-sales-report/rehearsal-input/orders.csv
+2026-09-26T13:10:45+00:00 rehearsal-host run_daily.sh[1294403]: OK: report for 2026-01-15 -> /opt/csv-daily-sales-report/rehearsal-output/daily-sales-report-2026-01-15.html
+2026-09-26T13:10:45+00:00 rehearsal-host systemd[66600]: Finished freelance-sales-rehearsal.service - THROWAWAY - freelance sales demo scheduled-recovery rehearsal (delete after use).
+2026-09-26T13:11:35+00:00 rehearsal-host run_daily.sh[1295189]: OK: report for 2026-01-15 -> /opt/csv-daily-sales-report/rehearsal-output/daily-sales-report-2026-01-15.html
+2026-09-26T13:11:35+00:00 rehearsal-host systemd[66600]: Finished freelance-sales-rehearsal.service - THROWAWAY - freelance sales demo scheduled-recovery rehearsal (delete after use).
+2026-09-26T13:12:26+00:00 rehearsal-host run_daily.sh[1297039]: OK: report for 2026-01-15 -> /opt/csv-daily-sales-report/rehearsal-output/daily-sales-report-2026-01-15.html
+2026-09-26T13:12:26+00:00 rehearsal-host systemd[66600]: Finished freelance-sales-rehearsal.service - THROWAWAY - freelance sales demo scheduled-recovery rehearsal (delete after use).
+2026-09-26T13:13:15+00:00 rehearsal-host run_daily.sh[1297439]: OK: report for 2026-01-15 -> /opt/csv-daily-sales-report/rehearsal-output/daily-sales-report-2026-01-15.html
+2026-09-26T13:13:15+00:00 rehearsal-host systemd[66600]: Finished freelance-sales-rehearsal.service - THROWAWAY - freelance sales demo scheduled-recovery rehearsal (delete after use).
+2026-09-26T13:14:06+00:00 rehearsal-host run_daily.sh[1297691]: OK: report for 2026-01-15 -> /opt/csv-daily-sales-report/rehearsal-output/daily-sales-report-2026-01-15.html
+2026-09-26T13:14:06+00:00 rehearsal-host systemd[66600]: Finished freelance-sales-rehearsal.service - THROWAWAY - freelance sales demo scheduled-recovery rehearsal (delete after use).
+2026-09-26T13:14:57+00:00 rehearsal-host run_daily.sh[1297963]: OK: report for 2026-01-15 -> /opt/csv-daily-sales-report/rehearsal-output/daily-sales-report-2026-01-15.html
+2026-09-26T13:14:57+00:00 rehearsal-host systemd[66600]: Finished freelance-sales-rehearsal.service - THROWAWAY - freelance sales demo scheduled-recovery rehearsal (delete after use).
+2026-09-26T13:15:48+00:00 rehearsal-host run_daily.sh[1298426]: OK: report for 2026-01-15 -> /opt/csv-daily-sales-report/rehearsal-output/daily-sales-report-2026-01-15.html
+2026-09-26T13:15:48+00:00 rehearsal-host systemd[66600]: Finished freelance-sales-rehearsal.service - THROWAWAY - freelance sales demo scheduled-recovery rehearsal (delete after use).

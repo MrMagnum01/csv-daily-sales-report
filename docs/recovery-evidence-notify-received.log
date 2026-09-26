@@ -1,0 +1,3 @@
+2026-09-26T13:08:12Z RECEIVED: {"event_id": "input_missing", "fired_at": "2026-09-26T13:08:12Z", "message": "Input file not found: /opt/csv-daily-sales-report/rehearsal-input/orders.csv", "report_date": "2026-01-15", "severity": "critical"}
+2026-09-26T13:10:44Z RECEIVED: {"event_id": "malformed_rows", "fired_at": "2026-09-26T13:10:44Z", "message": "5 malformed row(s) skipped on 2026-01-15: {'non_finite_price': 1, 'bad_date': 1, 'missing_field': 1, 'unknown_status': 1, 'non_numeric_quantity': 1}", "report_date": "2026-01-15", "severity": "warning"}
+2026-09-26T13:10:45Z RECEIVED: {"event_id": "revenue_outliers", "fired_at": "2026-09-26T13:10:45Z", "message": "1 order line(s) flagged as revenue outliers on 2026-01-15.", "report_date": "2026-01-15", "severity": "info"}
