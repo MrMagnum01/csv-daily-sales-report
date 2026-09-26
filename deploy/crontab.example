@@ -1,0 +1,8 @@
+# Example cron entry -- runs the daily sales report at 06:00 local time.
+# Install with: crontab -e   (as the service account that owns this checkout)
+#
+# Adjust the path to where this repo is checked out. run_daily.sh handles
+# its own locking and retries, so a normal cron overlap (previous run still
+# retrying when this fires again) is safe -- the second invocation skips
+# cleanly instead of racing.
+0 6 * * * /opt/csv-daily-sales-report/src/run_daily.sh >> /opt/csv-daily-sales-report/src/cron.log 2>&1

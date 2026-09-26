@@ -1,0 +1,11 @@
+[Unit]
+Description=Run the daily sales report every day at 06:00
+
+[Timer]
+OnCalendar=*-*-* 06:00:00
+Persistent=true
+# If the box was off/asleep at 06:00, run once on next boot instead of
+# silently skipping the day.
+
+[Install]
+WantedBy=timers.target

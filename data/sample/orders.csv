@@ -1,0 +1,230 @@
+order_id,order_date,customer_id,sku,product_name,category,quantity,unit_price,status,region,currency
+ORD-20260115-0020,2026-01-15,CUST-7916,SKU-1003,Cobalt Water Bottle,Outdoor,2,15.12,completed,latam,USD
+ORD-20260115-0061,2026-01-15,CUST-2232,SKU-1002,Nimbus Backpack,Bags,3,109.24,refunded,north-america,USD
+ORD-20260115-0175,2026-01-15,CUST-9702,SKU-1004,Quartz Wireless Mouse,Electronics,2,71.38,completed,europe,USD
+ORD-20260115-0168,2026-01-15,CUST-7717,SKU-1003,Cobalt Water Bottle,Outdoor,5,81.34,completed,north-america,USD
+ORD-20260115-0076,2026-01-15,CUST-5920,SKU-1002,Nimbus Backpack,Bags,2,42.64,completed,apac,USD
+ORD-20260115-0174,2026-01-15,CUST-1919,SKU-1006,Drift Bluetooth Speaker,Electronics,1,48.15,completed,europe,USD
+ORD-20260115-0004,2026-01-15,CUST-7873,SKU-1009,Solace Reading Pillow,Home,1,58.31,completed,north-america,USD
+ORD-20260115-0139,2026-01-15,CUST-1534,SKU-1005,Fernwood Notebook Set,Stationery,1,40.27,completed,latam,USD
+ORD-20260115-0025,2026-01-15,CUST-4258,SKU-1009,Solace Reading Pillow,Home,1,49.88,completed,north-america,USD
+ORD-20260115-0176,2026-01-15,CUST-2293,SKU-1003,Cobalt Water Bottle,Outdoor,2,105.53,refunded,europe,USD
+ORD-20260115-0071,2026-01-15,CUST-2889,SKU-1001,Aurora Desk Lamp,Home,1,28.0,completed,north-america,USD
+ORD-20260115-0181,2026-01-15,CUST-4886,SKU-1002,Nimbus Backpack,Bags,2,72.06,refunded,apac,USD
+ORD-20260115-0062,2026-01-15,CUST-3426,SKU-1006,Drift Bluetooth Speaker,Electronics,2,22.27,completed,apac,USD
+ORD-20260115-0209,2026-01-15,CUST-2862,SKU-1009,Solace Reading Pillow,Home,3,15.12,completed,apac,USD
+ORD-20260115-0164,2026-01-15,CUST-4090,SKU-1006,Drift Bluetooth Speaker,Electronics,3,34.75,completed,europe,USD
+ORD-20260115-0092,2026-01-15,CUST-6502,SKU-1005,Fernwood Notebook Set,Stationery,1,108.02,completed,europe,USD
+ORD-20260115-0123,2026-01-15,CUST-4986,SKU-1007,Basalt Coffee Grinder,Kitchen,1,82.36,completed,latam,USD
+ORD-20260115-0227,2026-01-14,CUST-1204,SKU-1010,Pathway Trail Shoes,Outdoor,1,75.0,completed,north-america,USD
+ORD-20260115-0215,2026-01-15,CUST-9282,SKU-1008,Meridian Yoga Mat,Fitness,2,56.18,cancelled,north-america,USD
+ORD-20260115-0031,2026-01-15,CUST-7118,SKU-1007,Basalt Coffee Grinder,Kitchen,2,108.76,completed,north-america,USD
+ORD-20260115-0225,2026-01-15,CUST-1202,SKU-1007,Basalt Coffee Grinder,Kitchen,1,-30.0,completed,europe,USD
+ORD-20260115-0198,2026-01-15,CUST-3531,SKU-1010,Pathway Trail Shoes,Outdoor,2,81.35,completed,latam,USD
+ORD-20260115-0129,2026-01-15,CUST-9751,SKU-1001,Aurora Desk Lamp,Home,1,38.72,completed,apac,USD
+ORD-20260115-0019,2026-01-15,CUST-9085,SKU-1009,Solace Reading Pillow,Home,1,92.65,completed,europe,USD
+ORD-20260115-0009,2026-01-15,CUST-1750,SKU-1002,Nimbus Backpack,Bags,3,33.52,completed,north-america,USD
+ORD-20260115-0026,2026-01-15,CUST-6310,SKU-1010,Pathway Trail Shoes,Outdoor,2,10.18,completed,apac,USD
+ORD-20260115-0081,2026-01-15,CUST-2389,SKU-1003,Cobalt Water Bottle,Outdoor,1,65.73,cancelled,apac,USD
+ORD-20260115-0060,2026-01-15,CUST-8239,SKU-1003,Cobalt Water Bottle,Outdoor,2,87.03,refunded,north-america,USD
+ORD-20260115-0105,2026-01-15,CUST-2124,SKU-1004,Quartz Wireless Mouse,Electronics,5,115.22,completed,north-america,USD
+ORD-20260115-0142,2026-01-15,CUST-2169,SKU-1003,Cobalt Water Bottle,Outdoor,1,26.58,completed,apac,USD
+ORD-20260115-0159,2026-01-15,CUST-4993,SKU-1008,Meridian Yoga Mat,Fitness,2,69.74,completed,europe,USD
+ORD-20260115-0036,2026-01-15,CUST-8749,SKU-1004,Quartz Wireless Mouse,Electronics,5,53.59,completed,north-america,USD
+ORD-20260115-0066,2026-01-15,CUST-5371,SKU-1004,Quartz Wireless Mouse,Electronics,1,96.19,completed,latam,USD
+ORD-20260115-0035,2026-01-15,CUST-8953,SKU-1005,Fernwood Notebook Set,Stationery,1,68.39,cancelled,latam,USD
+ORD-20260115-0151,2026-01-15,CUST-1601,SKU-1009,Solace Reading Pillow,Home,2,17.86,completed,apac,USD
+ORD-20260115-0067,2026-01-15,CUST-8711,SKU-1001,Aurora Desk Lamp,Home,1,30.35,completed,apac,USD
+ORD-20260115-0228,2026-01-15,CUST-1205,SKU-1005,Fernwood Notebook Set,Stationery,2,15.0,completed,europe,USD
+ORD-20260115-0223,not-a-date,CUST-1200,SKU-1004,Quartz Wireless Mouse,Electronics,1,24.5,completed,north-america,USD
+ORD-20260115-0075,2026-01-15,CUST-8066,SKU-1006,Drift Bluetooth Speaker,Electronics,1,114.27,completed,apac,USD
+ORD-20260115-0045,2026-01-15,CUST-4111,SKU-1003,Cobalt Water Bottle,Outdoor,1,32.38,completed,north-america,USD
+ORD-20260115-0005,2026-01-15,CUST-7924,SKU-1003,Cobalt Water Bottle,Outdoor,1,39.12,completed,apac,USD
+ORD-20260115-0137,2026-01-15,CUST-5335,SKU-1004,Quartz Wireless Mouse,Electronics,3,17.09,completed,europe,USD
+ORD-20260115-0048,2026-01-15,CUST-7615,SKU-1004,Quartz Wireless Mouse,Electronics,1,113.46,refunded,europe,USD
+ORD-20260115-0127,2026-01-15,CUST-4545,SKU-1004,Quartz Wireless Mouse,Electronics,3,62.23,cancelled,apac,USD
+ORD-20260115-0078,2026-01-15,CUST-5930,SKU-1003,Cobalt Water Bottle,Outdoor,2,69.37,completed,apac,USD
+ORD-20260115-0199,2026-01-15,CUST-1536,SKU-1005,Fernwood Notebook Set,Stationery,3,49.5,completed,latam,USD
+ORD-20260115-0112,2026-01-15,CUST-9728,SKU-1006,Drift Bluetooth Speaker,Electronics,2,82.09,completed,apac,USD
+ORD-20260115-0197,2026-01-15,CUST-8432,SKU-1007,Basalt Coffee Grinder,Kitchen,1,83.09,cancelled,latam,USD
+ORD-20260115-0191,2026-01-15,CUST-1228,SKU-1007,Basalt Coffee Grinder,Kitchen,1,68.1,completed,apac,USD
+ORD-20260115-0118,2026-01-15,CUST-9098,SKU-1001,Aurora Desk Lamp,Home,5,44.4,completed,europe,USD
+ORD-20260115-0116,2026-01-15,CUST-5022,SKU-1006,Drift Bluetooth Speaker,Electronics,5,112.68,completed,latam,USD
+ORD-20260115-0083,2026-01-15,CUST-1757,SKU-1001,Aurora Desk Lamp,Home,1,118.2,refunded,north-america,USD
+ORD-20260115-0128,2026-01-15,CUST-4180,SKU-1002,Nimbus Backpack,Bags,1,33.48,completed,apac,USD
+ORD-20260115-0134,2026-01-15,CUST-5066,SKU-1002,Nimbus Backpack,Bags,1,70.5,completed,europe,USD
+ORD-20260115-0214,2026-01-15,CUST-9984,SKU-1005,Fernwood Notebook Set,Stationery,3,44.42,refunded,apac,USD
+ORD-20260115-0113,2026-01-15,CUST-7882,SKU-1001,Aurora Desk Lamp,Home,5,62.9,completed,apac,USD
+ORD-20260115-0050,2026-01-15,CUST-4346,SKU-1005,Fernwood Notebook Set,Stationery,3,88.21,completed,apac,USD
+ORD-20260115-0152,2026-01-15,CUST-7622,SKU-1002,Nimbus Backpack,Bags,5,65.63,completed,latam,USD
+ORD-20260115-0063,2026-01-15,CUST-6862,SKU-1001,Aurora Desk Lamp,Home,1,84.39,cancelled,north-america,USD
+ORD-20260115-0034,2026-01-15,CUST-2104,SKU-1004,Quartz Wireless Mouse,Electronics,1,104.28,completed,europe,USD
+ORD-20260115-0170,2026-01-15,CUST-9742,SKU-1006,Drift Bluetooth Speaker,Electronics,2,114.86,cancelled,latam,USD
+ORD-20260115-0094,2026-01-15,CUST-7797,SKU-1002,Nimbus Backpack,Bags,2,45.06,completed,latam,USD
+ORD-20260115-0121,2026-01-15,CUST-9004,SKU-1007,Basalt Coffee Grinder,Kitchen,2,92.91,cancelled,latam,USD
+ORD-20260115-0100,2026-01-15,CUST-9751,SKU-1010,Pathway Trail Shoes,Outdoor,1,109.58,refunded,north-america,USD
+ORD-20260115-0140,2026-01-15,CUST-4824,SKU-1002,Nimbus Backpack,Bags,1,96.24,cancelled,europe,USD
+ORD-20260115-0043,2026-01-15,CUST-1960,SKU-1007,Basalt Coffee Grinder,Kitchen,1,50.44,completed,apac,USD
+ORD-20260115-0138,2026-01-15,CUST-2229,SKU-1009,Solace Reading Pillow,Home,1,8.3,completed,latam,USD
+ORD-20260115-0044,2026-01-15,CUST-5673,SKU-1008,Meridian Yoga Mat,Fitness,2,86.02,cancelled,latam,USD
+ORD-20260115-0218,2026-01-15,CUST-6120,SKU-1007,Basalt Coffee Grinder,Kitchen,3,36.55,completed,latam,USD
+ORD-20260115-0101,2026-01-15,CUST-8022,SKU-1002,Nimbus Backpack,Bags,1,105.09,completed,north-america,USD
+ORD-20260115-0011,2026-01-15,CUST-7065,SKU-1003,Cobalt Water Bottle,Outdoor,1,31.46,completed,north-america,USD
+ORD-20260115-0068,2026-01-15,CUST-4728,SKU-1005,Fernwood Notebook Set,Stationery,1,10.65,completed,latam,USD
+ORD-20260115-0085,2026-01-15,CUST-7547,SKU-1008,Meridian Yoga Mat,Fitness,1,24.53,cancelled,north-america,USD
+ORD-20260115-0077,2026-01-15,CUST-5844,SKU-1007,Basalt Coffee Grinder,Kitchen,2,22.26,completed,latam,USD
+ORD-20260115-0228,2026-01-15,CUST-1205,SKU-1005,Fernwood Notebook Set,Stationery,2,15.0,completed,europe,USD
+ORD-20260115-0155,2026-01-15,CUST-8941,SKU-1008,Meridian Yoga Mat,Fitness,1,11.23,cancelled,europe,USD
+ORD-20260115-0126,2026-01-15,CUST-6169,SKU-1004,Quartz Wireless Mouse,Electronics,1,91.2,cancelled,europe,USD
+ORD-20260115-0133,2026-01-15,CUST-1878,SKU-1010,Pathway Trail Shoes,Outdoor,1,24.71,refunded,apac,USD
+ORD-20260115-0188,2026-01-15,CUST-9221,SKU-1009,Solace Reading Pillow,Home,1,101.01,completed,latam,USD
+ORD-20260115-0115,2026-01-15,CUST-9817,SKU-1010,Pathway Trail Shoes,Outdoor,5,62.15,completed,apac,USD
+ORD-20260115-0202,2026-01-15,CUST-4475,SKU-1002,Nimbus Backpack,Bags,3,79.62,completed,north-america,USD
+ORD-20260115-0190,2026-01-15,CUST-7511,SKU-1004,Quartz Wireless Mouse,Electronics,5,98.11,completed,north-america,USD
+ORD-20260115-0119,2026-01-15,CUST-5232,SKU-1006,Drift Bluetooth Speaker,Electronics,1,39.32,refunded,apac,USD
+ORD-20260115-0166,2026-01-15,CUST-3492,SKU-1007,Basalt Coffee Grinder,Kitchen,2,116.06,completed,apac,USD
+ORD-20260115-0183,2026-01-15,CUST-1803,SKU-1010,Pathway Trail Shoes,Outdoor,2,91.46,completed,europe,USD
+ORD-20260115-0213,2026-01-15,CUST-2323,SKU-1002,Nimbus Backpack,Bags,1,76.13,completed,europe,USD
+ORD-20260115-0120,2026-01-15,CUST-1166,SKU-1009,Solace Reading Pillow,Home,2,114.18,completed,europe,USD
+ORD-20260115-0054,2026-01-15,CUST-5002,SKU-1002,Nimbus Backpack,Bags,1,39.92,completed,apac,USD
+ORD-20260115-0082,2026-01-15,CUST-4848,SKU-1002,Nimbus Backpack,Bags,3,42.77,completed,europe,USD
+ORD-20260115-0052,2026-01-15,CUST-1152,SKU-1002,Nimbus Backpack,Bags,2,77.57,refunded,north-america,USD
+ORD-20260115-0093,2026-01-15,CUST-4788,SKU-1003,Cobalt Water Bottle,Outdoor,2,85.72,cancelled,europe,USD
+ORD-20260115-0212,2026-01-15,CUST-7580,SKU-1008,Meridian Yoga Mat,Fitness,2,84.84,completed,latam,USD
+ORD-20260115-0219,2026-01-15,CUST-2494,SKU-1002,Nimbus Backpack,Bags,5,17.56,completed,north-america,USD
+ORD-20260115-0157,2026-01-15,CUST-2858,SKU-1004,Quartz Wireless Mouse,Electronics,2,114.07,cancelled,europe,USD
+ORD-20260115-0131,2026-01-15,CUST-8843,SKU-1008,Meridian Yoga Mat,Fitness,2,46.16,completed,apac,USD
+ORD-20260115-0059,2026-01-15,CUST-5533,SKU-1007,Basalt Coffee Grinder,Kitchen,1,8.4,completed,apac,USD
+ORD-20260115-0003,2026-01-15,CUST-4582,SKU-1002,Nimbus Backpack,Bags,1,64.6,completed,europe,USD
+ORD-20260115-0195,2026-01-15,CUST-2911,SKU-1007,Basalt Coffee Grinder,Kitchen,1,13.08,completed,apac,USD
+ORD-20260115-0006,2026-01-15,CUST-2519,SKU-1002,Nimbus Backpack,Bags,2,18.83,completed,apac,USD
+ORD-20260115-0161,2026-01-15,CUST-6568,SKU-1007,Basalt Coffee Grinder,Kitchen,5,64.87,completed,apac,USD
+ORD-20260115-0051,2026-01-15,CUST-3144,SKU-1007,Basalt Coffee Grinder,Kitchen,3,80.3,completed,apac,USD
+ORD-20260115-0010,2026-01-15,CUST-2654,SKU-1004,Quartz Wireless Mouse,Electronics,2,39.13,cancelled,apac,USD
+ORD-20260115-0046,2026-01-15,CUST-1936,SKU-1006,Drift Bluetooth Speaker,Electronics,1,73.43,refunded,europe,USD
+ORD-20260115-0104,2026-01-15,CUST-8705,SKU-1002,Nimbus Backpack,Bags,1,91.89,completed,apac,USD
+ORD-20260115-0086,2026-01-15,CUST-7965,SKU-1002,Nimbus Backpack,Bags,1,27.7,cancelled,latam,USD
+ORD-20260115-0201,2026-01-15,CUST-7523,SKU-1001,Aurora Desk Lamp,Home,1,29.26,completed,latam,USD
+ORD-20260115-0065,2026-01-15,CUST-7755,SKU-1003,Cobalt Water Bottle,Outdoor,1,28.09,completed,latam,USD
+ORD-20260115-0141,2026-01-15,CUST-2880,SKU-1007,Basalt Coffee Grinder,Kitchen,2,33.18,completed,apac,USD
+ORD-20260115-0216,2026-01-15,CUST-4522,SKU-1009,Solace Reading Pillow,Home,2,58.57,completed,latam,USD
+ORD-20260115-0187,2026-01-15,CUST-3877,SKU-1007,Basalt Coffee Grinder,Kitchen,1,22.8,refunded,apac,USD
+ORD-20260115-0049,2026-01-15,CUST-1651,SKU-1010,Pathway Trail Shoes,Outdoor,2,17.18,cancelled,apac,USD
+ORD-20260115-0017,2026-01-15,CUST-5339,SKU-1003,Cobalt Water Bottle,Outdoor,1,35.62,refunded,apac,USD
+ORD-20260115-0023,2026-01-15,CUST-3591,SKU-1007,Basalt Coffee Grinder,Kitchen,2,8.36,cancelled,apac,USD
+ORD-20260115-0192,2026-01-15,CUST-7242,SKU-1005,Fernwood Notebook Set,Stationery,5,79.52,completed,north-america,USD
+ORD-20260115-0096,2026-01-15,CUST-7232,SKU-1010,Pathway Trail Shoes,Outdoor,2,8.66,completed,apac,USD
+ORD-20260115-0064,2026-01-15,CUST-7658,SKU-1006,Drift Bluetooth Speaker,Electronics,2,91.94,completed,europe,USD
+ORD-20260115-0001,2026-01-15,CUST-1409,SKU-1002,Nimbus Backpack,Bags,3,38.8,completed,europe,USD
+ORD-20260115-0016,2026-01-15,CUST-9179,SKU-1004,Quartz Wireless Mouse,Electronics,2,107.08,cancelled,latam,USD
+ORD-20260115-0042,2026-01-15,CUST-4872,SKU-1002,Nimbus Backpack,Bags,1,53.52,completed,europe,USD
+ORD-20260115-0038,2026-01-15,CUST-1993,SKU-1002,Nimbus Backpack,Bags,2,89.56,completed,europe,USD
+ORD-20260115-0033,2026-01-15,CUST-4608,SKU-1010,Pathway Trail Shoes,Outdoor,1,15.95,cancelled,north-america,USD
+ORD-20260115-0098,2026-01-15,CUST-4595,SKU-1008,Meridian Yoga Mat,Fitness,1,56.81,completed,latam,USD
+ORD-20260115-0194,2026-01-15,CUST-4626,SKU-1010,Pathway Trail Shoes,Outdoor,3,15.08,completed,apac,USD
+ORD-20260115-0099,2026-01-15,CUST-7624,SKU-1006,Drift Bluetooth Speaker,Electronics,3,26.49,completed,europe,USD
+ORD-20260115-0207,2026-01-15,CUST-1243,SKU-1003,Cobalt Water Bottle,Outdoor,1,96.48,completed,apac,USD
+ORD-20260115-0122,2026-01-15,CUST-8342,SKU-1008,Meridian Yoga Mat,Fitness,5,9.93,completed,europe,USD
+ORD-20260115-0039,2026-01-15,CUST-4116,SKU-1004,Quartz Wireless Mouse,Electronics,2,58.24,completed,europe,USD
+ORD-20260115-0053,2026-01-15,CUST-9808,SKU-1002,Nimbus Backpack,Bags,1,64.66,completed,apac,USD
+ORD-20260115-0179,2026-01-15,CUST-8237,SKU-1002,Nimbus Backpack,Bags,1,118.62,completed,latam,USD
+ORD-20260115-0015,2026-01-15,CUST-2084,SKU-1005,Fernwood Notebook Set,Stationery,1,110.27,refunded,apac,USD
+ORD-20260115-0102,2026-01-15,CUST-7211,SKU-1005,Fernwood Notebook Set,Stationery,1,31.71,completed,apac,USD
+ORD-20260115-0057,2026-01-15,CUST-5616,SKU-1005,Fernwood Notebook Set,Stationery,2,31.59,completed,europe,USD
+ORD-20260115-0012,2026-01-15,CUST-3803,SKU-1010,Pathway Trail Shoes,Outdoor,2,89.66,completed,latam,USD
+ORD-20260115-0079,2026-01-15,CUST-4443,SKU-1005,Fernwood Notebook Set,Stationery,2,96.0,refunded,apac,USD
+ORD-20260115-0135,2026-01-15,CUST-7232,SKU-1009,Solace Reading Pillow,Home,2,109.75,completed,latam,USD
+ORD-20260115-0200,2026-01-15,CUST-6942,SKU-1004,Quartz Wireless Mouse,Electronics,1,117.86,completed,apac,USD
+ORD-20260115-0073,2026-01-15,CUST-9379,SKU-1010,Pathway Trail Shoes,Outdoor,1,51.14,refunded,europe,USD
+ORD-20260115-0029,2026-01-15,CUST-3705,SKU-1008,Meridian Yoga Mat,Fitness,1,67.1,refunded,latam,USD
+ORD-20260115-0111,2026-01-15,CUST-5941,SKU-1002,Nimbus Backpack,Bags,5,84.64,completed,north-america,USD
+ORD-20260115-0089,2026-01-15,CUST-8305,SKU-1009,Solace Reading Pillow,Home,1,91.29,completed,latam,USD
+ORD-20260115-0203,2026-01-15,CUST-4990,SKU-1006,Drift Bluetooth Speaker,Electronics,1,96.14,completed,north-america,USD
+ORD-20260115-0132,2026-01-15,CUST-2869,SKU-1008,Meridian Yoga Mat,Fitness,5,15.32,completed,north-america,USD
+ORD-20260115-0167,2026-01-15,CUST-8213,SKU-1002,Nimbus Backpack,Bags,1,66.91,completed,north-america,USD
+ORD-20260115-0150,2026-01-15,CUST-7744,SKU-1006,Drift Bluetooth Speaker,Electronics,3,63.49,cancelled,latam,USD
+ORD-20260115-0107,2026-01-15,CUST-8758,SKU-1003,Cobalt Water Bottle,Outdoor,3,20.81,completed,latam,USD
+ORD-20260115-0149,2026-01-15,CUST-7690,SKU-1006,Drift Bluetooth Speaker,Electronics,1,43.96,completed,europe,USD
+ORD-20260115-0125,2026-01-15,CUST-8434,SKU-1006,Drift Bluetooth Speaker,Electronics,1,42.34,completed,north-america,USD
+ORD-20260115-0222,2026-01-15,,SKU-1002,Nimbus Backpack,Bags,1,64.0,completed,apac,USD
+ORD-20260115-0114,2026-01-15,CUST-3506,SKU-1008,Meridian Yoga Mat,Fitness,2,27.73,refunded,apac,USD
+ORD-20260115-0184,2026-01-15,CUST-6772,SKU-1010,Pathway Trail Shoes,Outdoor,1,79.3,refunded,apac,USD
+ORD-20260115-0021,2026-01-15,CUST-5119,SKU-1009,Solace Reading Pillow,Home,2,104.41,completed,north-america,USD
+ORD-20260115-0013,2026-01-15,CUST-5422,SKU-1007,Basalt Coffee Grinder,Kitchen,3,85.07,completed,apac,USD
+ORD-20260115-0162,2026-01-15,CUST-9022,SKU-1005,Fernwood Notebook Set,Stationery,5,24.64,refunded,latam,USD
+ORD-20260115-0211,2026-01-15,CUST-5941,SKU-1009,Solace Reading Pillow,Home,2,80.05,completed,north-america,USD
+ORD-20260115-0220,2026-01-15,CUST-3131,SKU-1006,Drift Bluetooth Speaker,Electronics,2,14.72,refunded,apac,USD
+ORD-20260115-0022,2026-01-15,CUST-5371,SKU-1009,Solace Reading Pillow,Home,5,79.79,completed,apac,USD
+ORD-20260115-0153,2026-01-15,CUST-1888,SKU-1007,Basalt Coffee Grinder,Kitchen,1,66.07,refunded,latam,USD
+ORD-20260115-0146,2026-01-15,CUST-1339,SKU-1010,Pathway Trail Shoes,Outdoor,5,83.3,completed,north-america,USD
+ORD-20260115-0084,2026-01-15,CUST-7790,SKU-1008,Meridian Yoga Mat,Fitness,3,72.48,cancelled,latam,USD
+ORD-20260115-0182,2026-01-15,CUST-1359,SKU-1005,Fernwood Notebook Set,Stationery,5,81.72,completed,north-america,USD
+ORD-20260115-0204,2026-01-15,CUST-4394,SKU-1009,Solace Reading Pillow,Home,2,32.19,completed,apac,USD
+ORD-20260115-0041,2026-01-15,CUST-2604,SKU-1009,Solace Reading Pillow,Home,1,81.04,refunded,north-america,USD
+ORD-20260115-0088,2026-01-15,CUST-6198,SKU-1009,Solace Reading Pillow,Home,5,107.84,refunded,latam,USD
+ORD-20260115-0117,2026-01-15,CUST-8613,SKU-1004,Quartz Wireless Mouse,Electronics,2,76.36,completed,apac,USD
+ORD-20260115-0108,2026-01-15,CUST-7043,SKU-1005,Fernwood Notebook Set,Stationery,1,75.86,cancelled,north-america,USD
+ORD-20260115-0097,2026-01-15,CUST-7865,SKU-1007,Basalt Coffee Grinder,Kitchen,2,91.72,refunded,europe,USD
+ORD-20260115-0056,2026-01-15,CUST-3200,SKU-1002,Nimbus Backpack,Bags,1,20.93,completed,europe,USD
+ORD-20260115-0136,2026-01-15,CUST-1986,SKU-1005,Fernwood Notebook Set,Stationery,2,115.53,completed,europe,USD
+ORD-20260115-0024,2026-01-15,CUST-3927,SKU-1009,Solace Reading Pillow,Home,2,110.21,cancelled,apac,USD
+ORD-20260115-0186,2026-01-15,CUST-6977,SKU-1001,Aurora Desk Lamp,Home,3,22.72,completed,apac,USD
+ORD-20260115-0163,2026-01-15,CUST-6446,SKU-1006,Drift Bluetooth Speaker,Electronics,2,93.44,completed,latam,USD
+ORD-20260115-0177,2026-01-15,CUST-3344,SKU-1008,Meridian Yoga Mat,Fitness,1,59.65,completed,latam,USD
+ORD-20260115-0018,2026-01-15,CUST-8019,SKU-1010,Pathway Trail Shoes,Outdoor,2,52.73,completed,europe,USD
+ORD-20260115-0103,2026-01-15,CUST-5558,SKU-1007,Basalt Coffee Grinder,Kitchen,5,114.53,completed,apac,USD
+ORD-20260115-0189,2026-01-15,CUST-6549,SKU-1005,Fernwood Notebook Set,Stationery,5,20.9,completed,europe,USD
+ORD-20260115-0145,2026-01-15,CUST-6280,SKU-1007,Basalt Coffee Grinder,Kitchen,2,36.04,completed,europe,USD
+ORD-20260115-0037,2026-01-15,CUST-6804,SKU-1007,Basalt Coffee Grinder,Kitchen,2,54.04,cancelled,north-america,USD
+ORD-20260115-0221,2026-01-15,CUST-5551,SKU-1006,Drift Bluetooth Speaker,Electronics,40,59.0,completed,europe,USD
+ORD-20260115-0002,2026-01-15,CUST-9935,SKU-1002,Nimbus Backpack,Bags,1,74.14,completed,north-america,USD
+ORD-20260115-0206,2026-01-15,CUST-5106,SKU-1009,Solace Reading Pillow,Home,5,27.54,cancelled,north-america,USD
+ORD-20260115-0087,2026-01-15,CUST-5082,SKU-1001,Aurora Desk Lamp,Home,5,21.59,completed,latam,USD
+ORD-20260115-0217,2026-01-15,CUST-8430,SKU-1006,Drift Bluetooth Speaker,Electronics,2,54.59,completed,apac,USD
+ORD-20260115-0180,2026-01-15,CUST-8484,SKU-1005,Fernwood Notebook Set,Stationery,5,41.84,completed,latam,USD
+ORD-20260115-0070,2026-01-15,CUST-7548,SKU-1009,Solace Reading Pillow,Home,3,117.89,refunded,apac,USD
+ORD-20260115-0047,2026-01-15,CUST-9320,SKU-1001,Aurora Desk Lamp,Home,1,103.35,completed,north-america,USD
+ORD-20260115-0008,2026-01-15,CUST-5803,SKU-1009,Solace Reading Pillow,Home,5,78.41,completed,europe,USD
+ORD-20260115-0069,2026-01-15,CUST-5564,SKU-1006,Drift Bluetooth Speaker,Electronics,5,15.78,completed,apac,USD
+ORD-20260115-0178,2026-01-15,CUST-1153,SKU-1005,Fernwood Notebook Set,Stationery,5,60.11,completed,europe,USD
+ORD-20260115-0210,2026-01-15,CUST-2786,SKU-1009,Solace Reading Pillow,Home,2,64.43,refunded,north-america,USD
+ORD-20260115-0156,2026-01-15,CUST-6091,SKU-1003,Cobalt Water Bottle,Outdoor,2,9.53,completed,north-america,USD
+ORD-20260115-0007,2026-01-15,CUST-8527,SKU-1001,Aurora Desk Lamp,Home,2,21.98,completed,north-america,USD
+ORD-20260115-0205,2026-01-15,CUST-1046,SKU-1003,Cobalt Water Bottle,Outdoor,1,104.14,completed,europe,USD
+ORD-20260115-0165,2026-01-15,CUST-1715,SKU-1007,Basalt Coffee Grinder,Kitchen,1,91.41,cancelled,latam,USD
+ORD-20260115-0173,2026-01-15,CUST-3725,SKU-1008,Meridian Yoga Mat,Fitness,3,41.54,completed,north-america,USD
+ORD-20260115-0158,2026-01-15,CUST-5781,SKU-1008,Meridian Yoga Mat,Fitness,2,87.01,completed,latam,USD
+ORD-20260115-0160,2026-01-15,CUST-9327,SKU-1010,Pathway Trail Shoes,Outdoor,3,106.48,completed,apac,USD
+ORD-20260115-0144,2026-01-15,CUST-9199,SKU-1005,Fernwood Notebook Set,Stationery,2,63.31,completed,north-america,USD
+ORD-20260115-0110,2026-01-15,CUST-4249,SKU-1007,Basalt Coffee Grinder,Kitchen,1,74.31,cancelled,europe,USD
+ORD-20260115-0208,2026-01-15,CUST-3854,SKU-1001,Aurora Desk Lamp,Home,1,13.87,cancelled,latam,USD
+ORD-20260115-0147,2026-01-15,CUST-8708,SKU-1003,Cobalt Water Bottle,Outdoor,2,80.97,completed,europe,USD
+ORD-20260115-0072,2026-01-15,CUST-8119,SKU-1002,Nimbus Backpack,Bags,1,89.6,completed,latam,USD
+ORD-20260115-0196,2026-01-15,CUST-2902,SKU-1008,Meridian Yoga Mat,Fitness,1,34.3,refunded,europe,USD
+ORD-20260115-0030,2026-01-15,CUST-9835,SKU-1004,Quartz Wireless Mouse,Electronics,5,89.75,completed,apac,USD
+ORD-20260115-0095,2026-01-15,CUST-4388,SKU-1001,Aurora Desk Lamp,Home,5,55.06,refunded,north-america,USD
+ORD-20260115-0143,2026-01-15,CUST-3037,SKU-1008,Meridian Yoga Mat,Fitness,2,85.13,cancelled,latam,USD
+ORD-20260115-0090,2026-01-15,CUST-5050,SKU-1005,Fernwood Notebook Set,Stationery,5,79.42,refunded,latam,USD
+ORD-20260115-0028,2026-01-15,CUST-2133,SKU-1008,Meridian Yoga Mat,Fitness,5,67.66,completed,europe,USD
+ORD-20260115-0058,2026-01-15,CUST-9280,SKU-1005,Fernwood Notebook Set,Stationery,2,36.13,completed,north-america,USD
+ORD-20260115-0124,2026-01-15,CUST-9698,SKU-1009,Solace Reading Pillow,Home,1,55.66,cancelled,apac,USD
+ORD-20260115-0169,2026-01-15,CUST-5342,SKU-1008,Meridian Yoga Mat,Fitness,1,77.81,completed,north-america,USD
+ORD-20260115-0040,2026-01-15,CUST-8579,SKU-1005,Fernwood Notebook Set,Stationery,1,105.94,completed,latam,USD
+ORD-20260115-0055,2026-01-15,CUST-9666,SKU-1010,Pathway Trail Shoes,Outdoor,1,82.8,refunded,apac,USD
+ORD-20260115-0130,2026-01-15,CUST-9042,SKU-1003,Cobalt Water Bottle,Outdoor,1,105.74,refunded,apac,USD
+ORD-20260115-0148,2026-01-15,CUST-8141,SKU-1010,Pathway Trail Shoes,Outdoor,3,99.2,completed,latam,USD
+ORD-20260115-0027,2026-01-15,CUST-1949,SKU-1004,Quartz Wireless Mouse,Electronics,1,106.34,completed,north-america,USD
+ORD-20260115-0226,2026-01-15,CUST-1203,SKU-1009,Solace Reading Pillow,Home,1,42.0,backordered,apac,USD
+ORD-20260115-0080,2026-01-15,CUST-8238,SKU-1008,Meridian Yoga Mat,Fitness,2,83.67,refunded,latam,USD
+ORD-20260115-0154,2026-01-15,CUST-1845,SKU-1008,Meridian Yoga Mat,Fitness,1,37.91,completed,apac,USD
+ORD-20260115-0074,2026-01-15,CUST-1727,SKU-1005,Fernwood Notebook Set,Stationery,3,56.84,refunded,europe,USD
+ORD-20260115-0014,2026-01-15,CUST-4752,SKU-1001,Aurora Desk Lamp,Home,5,11.6,completed,latam,USD
+ORD-20260115-0185,2026-01-15,CUST-2591,SKU-1003,Cobalt Water Bottle,Outdoor,3,80.39,completed,latam,USD
+ORD-20260115-0109,2026-01-15,CUST-6096,SKU-1003,Cobalt Water Bottle,Outdoor,1,72.81,completed,latam,USD
+ORD-20260115-0193,2026-01-15,CUST-8724,SKU-1004,Quartz Wireless Mouse,Electronics,1,77.39,refunded,apac,USD
+ORD-20260115-0171,2026-01-15,CUST-1588,SKU-1009,Solace Reading Pillow,Home,2,15.66,cancelled,apac,USD
+ORD-20260115-0224,2026-01-15,CUST-1201,SKU-1003,Cobalt Water Bottle,Outdoor,many,18.0,completed,latam,USD
+ORD-20260115-0091,2026-01-15,CUST-5499,SKU-1004,Quartz Wireless Mouse,Electronics,2,16.68,completed,europe,USD
+ORD-20260115-0106,2026-01-15,CUST-4266,SKU-1004,Quartz Wireless Mouse,Electronics,5,10.28,completed,europe,USD
+ORD-20260115-0032,2026-01-15,CUST-4681,SKU-1004,Quartz Wireless Mouse,Electronics,1,45.87,refunded,europe,USD
+ORD-20260115-0172,2026-01-15,CUST-2480,SKU-1004,Quartz Wireless Mouse,Electronics,2,117.57,cancelled,north-america,USD

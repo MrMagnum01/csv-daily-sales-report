@@ -1,0 +1,5 @@
+# Runtime: none -- src/ is pure Python 3 standard library (csv, dataclasses,
+# html, json, statistics). No third-party runtime dependency to pin.
+#
+# Test-only dependency below.
+pytest==9.1.1

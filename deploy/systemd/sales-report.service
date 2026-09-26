@@ -1,0 +1,15 @@
+[Unit]
+Description=Daily sales report generation
+Wants=sales-report.timer
+
+[Service]
+Type=oneshot
+# Adjust to the real checkout path and service account on the target host.
+WorkingDirectory=/opt/csv-daily-sales-report/src
+ExecStart=/opt/csv-daily-sales-report/src/run_daily.sh
+User=sales-report
+# Hardening -- read-only source tree, only the output/state dirs writable.
+ProtectSystem=strict
+ReadWritePaths=/opt/csv-daily-sales-report/output /opt/csv-daily-sales-report/state
+NoNewPrivileges=true
+PrivateTmp=true
