@@ -77,7 +77,7 @@ def main(argv=None) -> int:
 
     if outlier_ids:
         if not fire(report_date, "revenue_outliers", "info",
-                     f"{len(outlier_ids)} order(s) flagged as revenue outliers on {report_date}."):
+                     f"{len(outlier_ids)} order line(s) flagged as revenue outliers on {report_date}."):
             delivery_failures.append("revenue_outliers")
 
     if delivery_failures:

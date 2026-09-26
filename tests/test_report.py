@@ -197,7 +197,37 @@ def test_two_skus_one_order_two_currencies_regression(tmp_path):
     assert result.quarantined == []
     summary = summarize(result.rows, set())
     assert summary["by_currency"]["USD"]["gross_revenue"] == 30.00
+    # Astra follow-up finding 2: this is 3 LINES across 2 UNIQUE orders --
+    # lines_total must report 3, unique_orders_total must report 2, never
+    # a field named "orders_total" that's actually a line count.
+    assert summary["lines_total"] == 3
+    assert summary["unique_orders_total"] == 2
+    assert "orders_total" not in summary
     assert summary["by_currency"]["EUR"]["gross_revenue"] == 15.00
+
+
+def test_mixed_status_lines_on_one_order_are_not_collapsed(tmp_path):
+    # Policy (Astra follow-up finding 2): an order's lines can have
+    # different statuses. This tool never decides "the order's status is
+    # X" -- each line keeps its own status and is counted/summed on its
+    # own. One order, two lines: one completed, one refunded.
+    rows = (
+        "ORD-1,2026-01-15,CUST-1,SKU-1001,Lamp,Home,1,10.00,completed,europe,USD\n"
+        "ORD-1,2026-01-15,CUST-1,SKU-1002,Bag,Bags,1,20.00,refunded,europe,USD\n"
+    )
+    path = _write_csv(tmp_path, rows)
+    result = load_orders(path, REPORT_DATE)
+    assert len(result.rows) == 2
+    statuses = {r.sku: r.status for r in result.rows}
+    assert statuses == {"SKU-1001": "completed", "SKU-1002": "refunded"}
+
+    summary = summarize(result.rows, set())
+    assert summary["lines_total"] == 2
+    assert summary["lines_completed"] == 1
+    assert summary["lines_refunded"] == 1
+    assert summary["unique_orders_total"] == 1  # one order, mixed-status lines
+    assert summary["by_currency"]["USD"]["gross_revenue"] == 10.00  # only the completed line
+    assert summary["by_currency"]["USD"]["refund_amount"] == 20.00  # only the refunded line
 
 
 def test_html_escaping_of_untrusted_csv_values(tmp_path):

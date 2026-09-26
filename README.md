@@ -41,9 +41,14 @@ warehouse system). They want, every morning, without anyone touching it:
    products, revenue by region, flags) and a CSV summary, all grouped by
    currency — **revenue is never summed across currencies**; there is no
    exchange-rate conversion anywhere in this tool. A multi-currency day
-   shows one revenue figure per currency, not a blended total. All
-   CSV-derived text is HTML-escaped before rendering — untrusted input
-   never becomes markup.
+   shows one revenue figure per currency, not a blended total. All counts
+   (`lines_total`, `lines_completed`, etc.) are **order-line** counts, not
+   order counts — a `unique_orders_total` field reports the distinct
+   `order_id` count separately. An order whose lines have different
+   statuses (one SKU refunded, another still completed) is never collapsed
+   to a single order-level status: each line is counted and summed on its
+   own. All CSV-derived text is HTML-escaped before rendering — untrusted
+   input never becomes markup.
 4. **Exceptions report**: a CSV with per-category counts for malformed
    (skipped) rows, and one row per quarantined item (duplicate line,
    wrong-day) with its full original data and the reason.
@@ -106,10 +111,11 @@ Run the tests:
 .venv/bin/python -m pytest tests -v
 ```
 
-24 tests: schema/type validation per field, duplicate-line (not
+25 tests: schema/type validation per field, duplicate-line (not
 duplicate-order-id) quarantine, a regression proving a multi-SKU order
 keeps every line, per-currency revenue summarization (including a
-two-currency fixture proving totals are never summed together),
+two-currency fixture proving totals are never summed together), a
+mixed-status-lines-on-one-order regression documenting that policy,
 per-currency outlier detection, HTML-escaping of untrusted CSV content,
 CSV summary/exceptions writing, alert firing and idempotency (including a
 simulated delivery failure), an end-to-end CLI run, and four subprocess
@@ -148,11 +154,20 @@ It writes `output/daily-sales-report-<date>.html`,
 | Two scheduled runs overlapped | `run_daily.sh` took the `flock`; the second one logs a `WARNING` and exits 0 without touching `output/`. This only protects runs made *through* `run_daily.sh` — a manual direct `generate_report.py` invocation is not locked. |
 | `run_daily.sh` retried and still failed | Check `alerts.log` for the `CRITICAL` line with the final exit code; the underlying `generate_report.py` stderr is not captured by the wrapper — rerun it directly to see the traceback |
 
-**Support boundary.** This repo is a bounded, reviewed automation: input
-format, validation rules, and report layout as documented here. Changes to
-any of those (new columns, a different alert channel, a different report
-layout) are scoped change requests, not "support." No uptime/response-time
-SLA is implied by this demo.
+**Support boundary.** This repo is a bounded automation demo under review,
+not a cleared operational delivery. What "reviewed" means concretely here:
+an independent reviewer read the source, ran the test suite against fixed
+regression fixtures, and verified specific claims (dedup semantics,
+currency separation, escaping, exit codes) by direct probe. What it does
+**not** mean: no real scheduled run against a live timer/cron with a
+controlled receiver has completed a documented fail-then-recover-then-
+restart cycle yet (see `docs/recovery-evidence.md` for what has), no
+production notification channel has been exercised, and no client
+engagement or SLA has been defined. Scope as delivered: input format,
+validation rules, and report layout as documented here. Changes to any of
+those (new columns, a different alert channel, a different report layout)
+are scoped change requests, not "support." No uptime/response-time SLA is
+implied by this demo.
 
 ## Limits
 

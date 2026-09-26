@@ -110,11 +110,24 @@ def summarize(rows, outlier_ids):
     for (region, currency), e in by_region.items():
         by_region_by_currency[currency][region] = e
 
+    # This tool operates at the ORDER LINE level throughout (one row per
+    # SKU per order, per the input contract) -- these counts are line
+    # counts, not order counts, and are named accordingly (Astra follow-up
+    # finding 2: a 2-order/3-line fixture used to report "3 orders").
+    # unique_orders_total is a separate, order-level count for reference.
+    # Policy for an order whose lines have mixed status (e.g. one SKU
+    # refunded, another still completed): this tool does NOT collapse an
+    # order to a single status. Each line keeps its own status and is
+    # counted/summed independently; there is no "the order's status is X"
+    # decision made anywhere in this tool. See README.
+    unique_orders_total = len({r.order_id for r in rows})
+
     return {
-        "orders_total": len(rows),
-        "orders_completed": len(completed),
-        "orders_refunded": len(refunded),
-        "orders_cancelled": len(cancelled),
+        "lines_total": len(rows),
+        "lines_completed": len(completed),
+        "lines_refunded": len(refunded),
+        "lines_cancelled": len(cancelled),
+        "unique_orders_total": unique_orders_total,
         "units_sold": units_sold,
         "currencies": currencies,
         "by_currency": dict(by_currency),
@@ -129,10 +142,11 @@ def write_csv_summary(path, report_date, summary):
     with open(path, "w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh)
         w.writerow(["report_date", report_date])
-        w.writerow(["orders_total", summary["orders_total"]])
-        w.writerow(["orders_completed", summary["orders_completed"]])
-        w.writerow(["orders_refunded", summary["orders_refunded"]])
-        w.writerow(["orders_cancelled", summary["orders_cancelled"]])
+        w.writerow(["lines_total", summary["lines_total"]])
+        w.writerow(["lines_completed", summary["lines_completed"]])
+        w.writerow(["lines_refunded", summary["lines_refunded"]])
+        w.writerow(["lines_cancelled", summary["lines_cancelled"]])
+        w.writerow(["unique_orders_total", summary["unique_orders_total"]])
         w.writerow(["units_sold", summary["units_sold"]])
         w.writerow([])
         w.writerow(["currency", "gross_revenue", "refund_amount", "net_revenue"])
@@ -286,11 +300,13 @@ def render_html(report_date, summary, load_result, generated_at=None):
 {no_data_html}
 
 <div class="kpis">
-  <div class="kpi"><div class="label">Orders</div><div class="value">{summary['orders_total']}</div></div>
+  <div class="kpi"><div class="label">Order lines</div><div class="value">{summary['lines_total']}</div></div>
+  <div class="kpi"><div class="label">Unique orders</div><div class="value">{summary['unique_orders_total']}</div></div>
   <div class="kpi"><div class="label">Units sold</div><div class="value">{summary['units_sold']}</div></div>
   {kpi_currency_rows}
 </div>
 <p class="note">Revenue is reported per currency and never summed across currencies -- no exchange rate is assumed.</p>
+<p class="note">Counts above are order LINES (one per SKU per order), not orders -- an order with 3 SKU lines counts as 3 lines and 1 unique order. Lines are never collapsed to a single per-order status: an order whose lines have different statuses (e.g. one SKU refunded, another still completed) keeps each line's own status.</p>
 
 {outlier_html}
 {concentration_html}
